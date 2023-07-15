@@ -2,7 +2,7 @@ import java.util.List;
 
 public class BinarySearch {
     public static void main(String[] args) {
-
+        System.out.println(squareRoot(104));
     }
 
     public static int vanillaBinarySearch(List<Integer> arr, int target) {
@@ -113,5 +113,47 @@ public class BinarySearch {
         }
 
         return current;
+    }
+
+    // This is not from AlgoMonster - as my own experimentation, I wanted to make a square root algorithm that
+    // calculated the square root of x up to a given tolerance
+    public static double sqrt(double x, double tolerance) {
+        double left = 0, right = x;
+        double squareRoot = x / 2;
+
+        while (Math.abs(x - (squareRoot * squareRoot)) > tolerance * tolerance) {
+            squareRoot = (left + right) / 2;
+
+            if (squareRoot * squareRoot == x) {
+                return squareRoot;
+            } else if (squareRoot * squareRoot > x) {
+                right = squareRoot;
+            } else {
+                left = squareRoot;
+            }
+        }
+
+        return squareRoot;
+    }
+
+    // Find square root of n, with decimals truncated
+    public static int squareRoot(int n) {
+        int left = 0, right = n;
+
+        int lastLarger = 0;
+        while (left <= right) {
+            int midpoint = left + (right - left) / 2;
+
+            if (midpoint * midpoint == n) {
+                return midpoint;
+            } else if (midpoint * midpoint > n) {
+                lastLarger = midpoint;
+                right = midpoint - 1;
+            } else {
+                left = midpoint + 1;
+            }
+        }
+
+        return lastLarger - 1;
     }
 }
