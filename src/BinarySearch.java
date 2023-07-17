@@ -155,5 +155,98 @@ public class BinarySearch {
         }
 
         return lastLarger - 1;
+
+        // OR
+        /*
+        int left = 0, right = n;
+
+        int current = 0;
+        while (left <= right) {
+            int midpoint = left + (right - left) / 2;
+
+            if (midpoint * midpoint == n) {
+                return midpoint;
+            } else if (midpoint * midpoint > n) {
+                right = midpoint - 1;
+            } else {
+                left = midpoint + 1;
+                current = midpoint;
+            }
+        }
+
+        return current;
+        * */
+    }
+
+    // Find the minimum element in a rotated array
+    public static int findMinRotated(List<Integer> arr) {
+        int left = 0, right = arr.size() - 1;
+
+        int current = 0;
+        while (left <= right) {
+            int midpoint = left + (right - left) / 2;
+
+            if (arr.get(midpoint) > arr.get(arr.size() - 1)) {
+                left = midpoint + 1;
+            } else {
+                current = midpoint;
+                right = midpoint - 1;
+            }
+        }
+
+        return current;
+    }
+
+    // Get the index of the peak of a mountain array (A[0] < A[1] < ... < A[k] > A[k + 1] > A[k + 2] > ... > A[n])
+    public static int peakOfMountainArray(List<Integer> arr) {
+        int left = 1, right = arr.size() - 2;
+
+        int current = 0;
+        while (left <= right) {
+            int midpoint = left + (right - left) / 2;
+
+            if (arr.get(midpoint) > arr.get(midpoint - 1)) {
+                current = midpoint;
+                left = midpoint + 1;
+            } else {
+                right = midpoint - 1;
+            }
+        }
+
+        return current;
+    }
+
+    public static int newspapersSplit(List<Integer> newspapersReadTimes, int numCoworkers) {
+        int left = Collections.max(newspaperReadTimes);
+        int right = sum(newspapersReadTimes);
+
+        while (left <= right) {
+            int midpoint = left + (right - left) / 2;
+
+            int workers = 0;
+            int hours = 0;
+
+            for (int i = 0; i < newspapersReadTimes.size(); i++) {
+                hours += newspapersReadTimes.get(i);
+
+                if (hours >= midpoint) {
+                    workers++;
+                    hours = 0;
+                }
+
+                if (workers > numCoworkers) {
+                    break;
+                }
+            }
+
+            if (workers > numCoworkers) {
+
+                break;
+            }
+
+
+        }
+
+        return 0;
     }
 }
