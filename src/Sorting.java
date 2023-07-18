@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Sorting {
     public static void main(String[] args) {
+
         ArrayList<Integer> list = new ArrayList<>();
         ArrayList<Integer> scrambled = new ArrayList<>();
 
@@ -24,7 +25,9 @@ public class Sorting {
         }
 
         System.out.println("Unsorted: " + scrambled);
-        System.out.println("Sorted:   " + sortList(scrambled));
+        quickSort(scrambled, 0, scrambled.size() - 1, 0);
+        System.out.println("Sorted: " + scrambled);
+        //System.out.println("Sorted: " + sortList(scrambled));
     }
 
     public static List<Integer> sortList(List<Integer> unsortedList) {
@@ -120,5 +123,47 @@ public class Sorting {
         return merged;
     }
 
+    public static void quickSort(List<Integer> arr, int start, int end, int n) {
+        if (n == 2) {
+            return;
+        }
+
+        int pivot = partition(arr, start, end);
+        System.out.println(pivot);
+
+        quickSort(arr, start, pivot - 1, n + 1);
+        quickSort(arr, pivot + 1, end, n + 1);
+    }
+
+    public static int partition(List<Integer> arr, int start, int end) {
+        int indexOfPivotElement = start + (int) (Math.random() * (end - start + 1));
+        int pivotValue = arr.get(indexOfPivotElement);
+        swap(arr, indexOfPivotElement, end);
+
+        int left = start, right = end - 1;
+        while (left < right) {
+            while (left < arr.size() && arr.get(left) < pivotValue) {
+                left++;
+            }
+
+            while (right >= 0 && arr.get(right) >= pivotValue) {
+                right--;
+            }
+
+            if (left < right) {
+                swap(arr, left, right);
+            }
+        }
+
+        swap(arr, left, arr.size() - 1);
+        return left;
+    }
+
+    // Helper for quicksort
+    public static void swap(List<Integer> arr, int first, int second) {
+        int temp = arr.get(first);
+        arr.set(first, arr.get(second));
+        arr.set(second, temp);
+    }
 
 }
