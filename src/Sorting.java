@@ -23,8 +23,11 @@ public class Sorting {
             scrambled.add(list.remove(x));
         }
 
-        System.out.println("Unsorted: " + scrambled);
-        System.out.println("Sorted:   " + sortList(scrambled));
+        /*System.out.println("Unsorted: " + scrambled);
+        quickSort(scrambled, 0, scrambled.size() - 1);
+        System.out.println("Sorted: " + scrambled);*/
+
+        System.out.println("Sorted: " + sortList(scrambled));
     }
 
     public static List<Integer> sortList(List<Integer> unsortedList) {
@@ -120,5 +123,61 @@ public class Sorting {
         return merged;
     }
 
+
+    // Not Working
+    public static void quickSort(List<Integer> arr, int start, int end) {
+        int pivot = partition(arr, start, end);
+
+        if (start < pivot) {
+            quickSort(arr, start, pivot - 1);
+        }
+
+        if (end > pivot) {
+            quickSort(arr, pivot + 1, end);
+        }
+    }
+
+    public static int partition(List<Integer> arr, int start, int end) {
+        // Choose random element
+        int randomIndex = start + (int) (Math.random() * (end - start + 1));
+        int pivotValue = arr.get(randomIndex);
+        int lastElement = end;
+
+        // Move it to the end
+        swap(arr,randomIndex, end);
+
+        // Decrement end pointer so that we don't consider the pivot value itself
+        end--;
+
+        while (start < end) {
+            // Increment start until we get an element larger than the pivot value
+            while (start < arr.size() && arr.get(start) < pivotValue) {
+                start++;
+            }
+
+            // Decrement end until we get an element smaller than the pivot value
+            while (end > 0 && arr.get(end) > pivotValue) {
+                end--;
+            }
+
+            // Swap the two as long as start is still less than end
+            if (start < end) {
+                swap(arr, start, end);
+                start++;
+                end--;
+            }
+        }
+
+        // Move the pivot value to its correct spot
+        swap(arr, start, lastElement);
+        return start;
+    }
+
+    // Helper for quicksort
+    public static void swap(List<Integer> arr, int first, int second) {
+        int temp = arr.get(first);
+        arr.set(first, arr.get(second));
+        arr.set(second, temp);
+    }
 
 }

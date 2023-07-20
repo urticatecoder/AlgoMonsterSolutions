@@ -249,4 +249,65 @@ public class BinarySearch {
 
         return 0;
     }
+
+    // Return the minimum possible amount of time that it would take numCoworkers workers to read through the newspapers
+    // contained in newspapersReadTimes if you divide the load optimally
+    public static int newspapersSplit(List<Integer> newspapersReadTimes, int numCoworkers) {
+        int left = max(newspapersReadTimes);
+        int right = sum(newspapersReadTimes);
+
+        int current = left + (right - left) / 2;
+        while (left <= right) {
+            int midpoint = left + (right - left) / 2;
+
+            int hours = 0;
+            int coworkers = 0;
+
+            for (int readTime : newspapersReadTimes) {
+                if (hours + readTime > midpoint) {
+                    coworkers++;
+                    hours = 0;
+                }
+
+                hours += readTime;
+            }
+
+            if (hours != 0) {
+                coworkers++;
+            }
+
+            if (coworkers <= numCoworkers) {
+                current = midpoint;
+                right = midpoint - 1;
+            } else {
+                left = midpoint + 1;
+            }
+        }
+
+        return current;
+    }
+
+    // Helper for newspapersSplit
+    public static int max(List<Integer> newspapersReadTimes) {
+        int max = newspapersReadTimes.get(0);
+
+        for (int readTime : newspapersReadTimes) {
+            if (readTime > max) {
+                max = readTime;
+            }
+        }
+
+        return max;
+    }
+
+    // Helper for newspapersSplit
+    public static int sum(List<Integer> newspapersReadTimes) {
+        int sum = 0;
+
+        for (int readTime : newspapersReadTimes) {
+            sum += readTime;
+        }
+
+        return sum;
+    }
 }
