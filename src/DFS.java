@@ -5,6 +5,7 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public class DFS {
+    public static int index = 0;
     public static class Node<T> {
         public T val;
         public Node<T> left;
@@ -25,7 +26,8 @@ public class DFS {
         Scanner scanner = new Scanner(System.in);
         Node<Integer> root = buildTree(splitWords(scanner.nextLine()).iterator(), Integer::parseInt);
         scanner.close();
-        preOrderTraversal(root);
+
+        System.out.println(serialize(deserialize("5 4 3 x x 8 x x 6 x x")));
     }
 
     public static <T> Node<T> buildTree(Iterator<String> iter, Function<String, T> f) {
@@ -102,5 +104,36 @@ public class DFS {
         }
     }
 
+    // Returns the string version of the input tree, using prefix order
+    public static String serialize(Node root) {
+        if (root == null) {
+            return "x";
+        }
+        return root.val + " " + serialize(root.left) + " " + serialize(root.right);
+    }
 
+    // Returns the tree represented by the given string, using prefix order
+    // You can also do this by passing a list and keeping a global index variable, but
+    // an iterator is a little more elegant
+    public static Node deserialize(String root) {
+        List<String> tree = Arrays.asList(root.split(" "));
+        Iterator<String> it = tree.iterator();
+
+        return makeTree(it);
+    }
+
+    public static Node makeTree(Iterator<String> it) {
+        // You might not need this because a valid input string should always end with "x" (i think)
+        if (!it.hasNext()) return null;
+
+        String value = it.next();
+        if (value.equals("x")) return null;
+
+        Node root = new Node(Integer.parseInt(value));
+
+        root.left = makeTree(it);
+        root.right = makeTree(it);
+
+        return root;
+    }
 }
