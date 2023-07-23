@@ -136,4 +136,49 @@ public class DFS {
 
         return root;
     }
+
+    // Invert the binary tree (mirror it)
+    public static Node<Integer> invertBinaryTree(Node<Integer> tree) {
+        if (tree == null) return null;
+        return new Node(tree.val, invertBinaryTree(tree.right), invertBinaryTree(tree.left));
+    }
+
+    // Determine whether the given binary tree is a valid binary search tree
+    public static boolean validBst(Node<Integer> root) {
+        return valid(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    public static boolean valid(Node<Integer> root, int min, int max) {
+        if (root == null) return true;
+
+        if (root.val < min || root.val > max) return false;
+
+        return valid(root.left, min, root.val) && valid(root.right, root.val, max);
+    }
+
+    // Insert the given value as a leaf node in the given bst
+    public static Node<Integer> insertBst(Node<Integer> bst, int val) {
+        if (bst == null) {
+            return new Node(val);
+        }
+
+        if (val < bst.val) {
+            bst.left = insertBst(bst.left, val);
+        } else if (val > bst.val) {
+            bst.right = insertBst(bst.right, val);
+        }
+
+        return bst;
+    }
+
+    // Return the value of the lowest common ancestor of p and q
+    public static int lcaOnBst(Node<Integer> bst, int p, int q) {
+        if (p < bst.val && q < bst.val) {
+            return lcaOnBst(bst.left, p, q);
+        } else if (p > bst.val && q > bst.val) {
+            return lcaOnBst(bst.right, p, q);
+        } else {
+            return bst.val;
+        }
+    }
 }
