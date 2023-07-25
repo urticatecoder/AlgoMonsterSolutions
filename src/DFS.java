@@ -181,4 +181,24 @@ public class DFS {
             return bst.val;
         }
     }
+
+    // Return the value of the lowest common ancestor of node1 and node2 (not necessarily a Binary Search Tree)
+    public static Node lca(Node root, Node node1, Node node2) {
+        if (root == null) return null;
+        if (root.equals(node1) || root.equals(node2)) return root;
+
+        Node left = lca(root.left, node1, node2);
+        Node right = lca(root.right, node1, node2);
+
+        boolean leftNull = left == null;
+        boolean rightNull = right == null;
+
+        if (leftNull != rightNull) {
+            return leftNull ? right : left;
+        } else if (leftNull && rightNull) {
+            return null;
+        }
+
+        return root;
+    }
 }
