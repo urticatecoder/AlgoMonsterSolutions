@@ -37,13 +37,15 @@ public class Backtracking {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Node<Integer> root = buildTree(splitWords(scanner.nextLine()).iterator(), Integer::parseInt);
-        scanner.close();
-        List<String> res = ternaryTreePaths(root);
-        for (String line : res) {
-            System.out.println(line);
-        }
+//        Scanner scanner = new Scanner(System.in);
+//        Node<Integer> root = buildTree(splitWords(scanner.nextLine()).iterator(), Integer::parseInt);
+//        scanner.close();
+//        List<String> res = ternaryTreePaths(root);
+//        for (String line : res) {
+//            System.out.println(line);
+//        }
+
+
     }
 
     // Return a list that contains all root to leaf paths in the ternary tree
@@ -128,5 +130,47 @@ public class Backtracking {
             phoneNumberHelper(digits, current + 1, curPath, paths, digitsMap);
             curPath.deleteCharAt(curPath.length() - 1);
         }
+    }
+
+    // Get all possible combinations of palindromes from the string s
+    public static List<List<String>> partition(String s) {
+        ArrayList<String> current = new ArrayList<>();
+        ArrayList<List<String>> paths = new ArrayList<>();
+        partitionDfs(current, paths, s);
+
+        return paths;
+    }
+
+    public static void partitionDfs(ArrayList<String> current, List<List<String>> paths, String s) {
+        if (s.length() == 0) {
+            ArrayList<String> path = new ArrayList<>(current);
+            paths.add(path);
+            return;
+        }
+
+        for (int i = 0; i < s.length(); i++) {
+            String prefix = s.substring(0, i + 1);
+            if (!isPalindrome(prefix)) {
+                continue;
+            }
+            current.add(prefix);
+            partitionDfs(current, paths, s.substring(i + 1));
+            current.remove(current.size() - 1);
+        }
+    }
+
+    public static boolean isPalindrome(String s) {
+        int start = 0, end = s.length() - 1;
+
+        while (start <= s.length() - 1) {
+            if (s.charAt(start) != s.charAt(end)) {
+                return false;
+            }
+
+            start++;
+            end--;
+        }
+
+        return true;
     }
 }
