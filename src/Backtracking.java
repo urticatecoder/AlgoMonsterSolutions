@@ -45,7 +45,7 @@ public class Backtracking {
 //            System.out.println(line);
 //        }
 
-
+        System.out.println();
     }
 
     // Return a list that contains all root to leaf paths in the ternary tree
@@ -172,5 +172,68 @@ public class Backtracking {
         }
 
         return true;
+    }
+
+    // Generate a list of all valid combinations of n parentheses
+    public static List<String> generateParentheses(int n) {
+        ArrayList<String> paths = new ArrayList<String>();
+        StringBuilder parentheses = new StringBuilder();
+        generate(parentheses, paths, n, 0);
+        return paths;
+    }
+
+    public static void generate(StringBuilder parentheses, ArrayList<String> paths, int n, int openParentheses) {
+        if (openParentheses == 0 && n == 0) {
+            paths.add(parentheses.toString());
+            return;
+        }
+
+        String[] options = {"(", ")"};
+
+        for (String parenthesis : options) {
+            if (parenthesis.equals("(") && n == 0) {
+                continue;
+            } else if (parenthesis.equals(")") && openParentheses == 0) {
+                continue;
+            } else if (parenthesis.equals("(")) {
+                parentheses.append(parenthesis);
+                generate(parentheses, paths, n - 1, openParentheses + 1);
+                parentheses.deleteCharAt(parentheses.length() - 1);
+            } else if (parenthesis.equals(")")) {
+                parentheses.append(parenthesis);
+                generate(parentheses, paths, n, openParentheses - 1);
+                parentheses.deleteCharAt(parentheses.length() - 1);
+            }
+        }
+    }
+
+    // Return a list of every permutation of the letters contained in the string
+    public static List<String> permutations(String letters) {
+        StringBuilder initial = new StringBuilder();
+        ArrayList<String> paths = new ArrayList<>();
+        String[] lettersArray = letters.split("");
+        boolean[] used = new boolean[lettersArray.length];
+
+
+        permutationsDfs(0, initial, paths, lettersArray, used);
+
+        return paths;
+    }
+
+    public static void permutationsDfs(int startIndex, StringBuilder current, List<String> paths, String[] letters, boolean[] used) {
+        if (startIndex == used.length) {
+            paths.add(current.toString());
+            return;
+        }
+
+        for (int i = 0; i < letters.length; i++) {
+            if (!used[i]) {
+                current.append(letters[i]);
+                used[i] = true;
+                permutationsDfs(startIndex + 1, current, paths, letters, used);
+                used[i] = false;
+                current.deleteCharAt(current.length() - 1);
+            }
+        }
     }
 }
