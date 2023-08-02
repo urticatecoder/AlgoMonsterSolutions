@@ -236,4 +236,32 @@ public class Backtracking {
             }
         }
     }
+
+    // Return the number of ways to decode digits where each alphabet letter is mapped to a number: a -> 1, b -> 2, etc.
+    // NOTE: This could be faster if, instead of creating a substring and passing it, I just passed an int that keeps
+    // track of what index to start at. Making a substring is O(n), whereas checking at an index is O(1).
+    public static int decodeWays(String digits) {
+        HashMap<String, Integer> memo = new HashMap<>();
+
+        return decodeDfs(digits, memo);
+    }
+
+    public static int decodeDfs(String digits, HashMap<String, Integer> memo) {
+        if (digits.length() == 0) return 1;
+
+        if (memo.containsKey(digits)) return memo.get(digits);
+
+        int ways = 0;
+        if (digits.charAt(0) == '0') return ways;
+
+        ways += decodeDfs(digits.substring(1), memo);
+
+        if ((digits.length() > 1 && Integer.parseInt(digits.substring(0, 1)) == 1) || (digits.length() > 1 && Integer.parseInt(digits.substring(0, 1)) == 2 && Integer.parseInt(digits.substring(1, 2)) <= 6)) {
+            ways += decodeDfs(digits.substring(2), memo);
+        }
+
+        memo.put(digits, ways);
+
+        return ways;
+    }
 }
