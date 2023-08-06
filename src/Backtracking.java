@@ -264,4 +264,32 @@ public class Backtracking {
 
         return ways;
     }
+
+    // Return the minimum number of coins you can use to make change for amount
+    public static int coinChange(List<Integer> coins, int amount) {
+        HashMap<Integer, Integer> memo = new HashMap<>();
+        int ans = coinChangeHelper(coins, amount, memo);
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+
+    public static int coinChangeHelper(List<Integer> coins, int amount, HashMap<Integer, Integer> memo) {
+        if (amount < 0) return Integer.MAX_VALUE;
+        if (amount == 0) return 0;
+        if (memo.containsKey(amount)) return memo.get(amount);
+
+        int ans = Integer.MAX_VALUE;
+
+        for (int coin : coins) {
+            int change = coinChangeHelper(coins, amount - coin, memo);
+
+            if (change == Integer.MAX_VALUE) {
+                continue;
+            }
+
+            ans = Math.min(ans, 1 + change);
+        }
+
+        memo.put(amount, ans);
+        return ans;
+    }
 }
