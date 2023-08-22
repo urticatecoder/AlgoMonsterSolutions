@@ -292,4 +292,27 @@ public class Backtracking {
         memo.put(amount, ans);
         return ans;
     }
+
+    public static List<List<Integer>> combinationSum(List<Integer> candidates, int target) {
+        ArrayList<Integer> current = new ArrayList<>();
+        ArrayList<List<Integer>> paths = new ArrayList<>();
+        dfs(0, candidates, target, current, paths);
+        return paths;
+    }
+
+    public static void dfs(int startIndex, List<Integer> candidates, int target, List<Integer> current, List<List<Integer>> paths) {
+        if (target == 0) {
+            ArrayList<Integer> toAdd = new ArrayList<>(current);
+            paths.add(toAdd);
+            return;
+        } else if (target < 0) {
+            return;
+        }
+
+        for (int i = startIndex; i < candidates.size(); i++) {
+            current.add(candidates.get(i));
+            dfs(i, candidates, target - candidates.get(i), current, paths);
+            current.remove(current.size() - 1);
+        }
+    }
 }
