@@ -293,14 +293,16 @@ public class Backtracking {
         return ans;
     }
 
+    // Return a list of all combinations of elements from candidates that sum to target. You can use each candidate as
+    // many times as you want.
     public static List<List<Integer>> combinationSum(List<Integer> candidates, int target) {
         ArrayList<Integer> current = new ArrayList<>();
         ArrayList<List<Integer>> paths = new ArrayList<>();
-        dfs(0, candidates, target, current, paths);
+        combinationDfs(0, candidates, target, current, paths);
         return paths;
     }
 
-    public static void dfs(int startIndex, List<Integer> candidates, int target, List<Integer> current, List<List<Integer>> paths) {
+    public static void combinationDfs(int startIndex, List<Integer> candidates, int target, List<Integer> current, List<List<Integer>> paths) {
         if (target == 0) {
             ArrayList<Integer> toAdd = new ArrayList<>(current);
             paths.add(toAdd);
@@ -311,8 +313,39 @@ public class Backtracking {
 
         for (int i = startIndex; i < candidates.size(); i++) {
             current.add(candidates.get(i));
-            dfs(i, candidates, target - candidates.get(i), current, paths);
+            combinationDfs(i, candidates, target - candidates.get(i), current, paths);
             current.remove(current.size() - 1);
         }
+    }
+
+    // Return a list of all possible subsets of nums
+    public static List<List<Integer>> subsets(List<Integer> nums) {
+        ArrayList<List<Integer>> paths = new ArrayList<>();
+        ArrayList<Integer> current = new ArrayList<>();
+        subsetsDfs(nums, 0, paths, current);
+        return paths;
+    }
+
+    public static void subsetsDfs(List<Integer> nums, int startIndex, List<List<Integer>> paths, List<Integer> current) {
+        if (startIndex == nums.size()) {
+            ArrayList<Integer> copy = new ArrayList<>(current);
+            paths.add(copy);
+            return;
+        }
+
+        current.add(nums.get(startIndex));
+        subsetsDfs(nums, startIndex + 1, paths, current);
+        current.remove(current.size() - 1);
+        subsetsDfs(nums, startIndex + 1, paths, current);
+
+        // Alternative solution that is a little faster.
+        /*ArrayList<Integer> copy = new ArrayList<>(current);
+        paths.add(copy);
+
+        for (int i = startIndex; i < nums.size(); i++) {
+            current.add(nums.get(i));
+            subsetsDfs(nums, i + 1, paths, current);
+            current.remove(current.size() - 1);
+        }*/
     }
 }
