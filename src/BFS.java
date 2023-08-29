@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.ArrayDeque;
 
 public class BFS {
     public static class Node<T> {
@@ -77,5 +78,55 @@ public class BFS {
         }
 
         return ret;
+    }
+
+    // Given a tree root, return a list of lists where each list is a level of the tree. The lists should alternate
+    // in order: first left to right, then right to left.
+    public static List<List<Integer>> zigZagTraversal(Node<Integer> root) {
+        ArrayDeque<Node<Integer>> deque = new ArrayDeque<>();
+        ArrayList<List<Integer>> ret = new ArrayList<>();
+        if (root != null) {
+            deque.add(root);
+        }
+        int level = 0;
+
+        while (!deque.isEmpty()) {
+            int dequeSize = deque.size();
+            ArrayList<Integer> levelValues = new ArrayList<>();
+
+            for (int i = 0; i < dequeSize; i++) {
+                if (level % 2 == 0) {
+                    Node<Integer> node = deque.removeFirst();
+                    levelValues.add(node.val);
+                    if (node.left != null) {
+                        deque.addLast(node.left);
+                    }
+                    if (node.right != null) {
+                        deque.addLast(node.right);
+                    }
+
+                } else {
+                    Node<Integer> node = deque.removeLast();
+                    levelValues.add(node.val);
+                    if (node.right != null) {
+                        deque.addFirst(node.right);
+                    }
+                    if (node.left != null) {
+                        deque.addFirst(node.left);
+                    }
+
+                }
+            }
+
+            ret.add(levelValues);
+            level++;
+        }
+
+        return ret;
+
+        /* Alternative solution: Just put the nodes into a queue as we normally do for level order traversal. Then for
+        each level, create a new deque, and add to the beginning on odd levels, and add to the end on even levels. Then
+        convert that deque to a list and add it to your ret list.
+         */
     }
 }
