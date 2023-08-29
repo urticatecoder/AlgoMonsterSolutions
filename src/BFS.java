@@ -161,4 +161,31 @@ public class BFS {
 
         return arr;
     }
+
+    // Return the depth of the shallowest leaf node (closest to the root)
+    public static int binaryTreeMinDepth(Node<Integer> root) {
+        Queue<Node<Integer>> q = new ArrayDeque<>();
+        q.add(root);
+
+        int level = 0;
+
+        while (!q.isEmpty()) {
+            int levelSize = q.size();
+
+            for (int i = 0; i < levelSize; i++) {
+                Node<Integer> next = q.poll();
+
+                if (next.left == null && next.right == null) {
+                    return level;
+                }
+
+                if (next.left != null) q.add(next.left);
+                if (next.right != null) q.add(next.right);
+            }
+
+            level++;
+        }
+
+        return 0;
+    }
 }
