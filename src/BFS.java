@@ -129,4 +129,36 @@ public class BFS {
         convert that deque to a list and add it to your ret list.
          */
     }
+
+    // Print the view that you would see of the binary tree root when standing on its right side, from top to bottom
+    // (i.e. the rightmost node of each level)
+    public static List<Integer> binaryTreeRightSideView(Node<Integer> root) {
+        Queue<Node<Integer>> q = new ArrayDeque<>();
+        if (root != null) {
+            q.add(root);
+        }
+
+        ArrayList<Integer> arr = new ArrayList<>();
+
+        while (!q.isEmpty()) {
+            int levelSize = q.size();
+
+            for (int i = 0; i < levelSize; i++) {
+                Node<Integer> node = q.poll();
+                if (i == levelSize - 1) {
+                    arr.add(node.val);
+                }
+
+                if (node.left != null) {
+                    q.add(node.left);
+                }
+
+                if (node.right != null) {
+                    q.add(node.right);
+                }
+            }
+        }
+
+        return arr;
+    }
 }
