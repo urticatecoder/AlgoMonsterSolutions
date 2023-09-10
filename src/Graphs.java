@@ -58,4 +58,77 @@ public class Graphs {
 
         return level;
     }
+
+    // Replace all pixels of the same color that are connected to the given pixel in the given matrix
+    public static List<List<Integer>> floodFill(int r, int c, int replacement, List<List<Integer>> image) {
+        // DFS solution
+        /*HashSet<List<Integer>> visited = new HashSet<>();
+        floodFillDfs(r, c, replacement, image, visited);
+        return image;*/
+
+        //BFS Solution
+        int color = image.get(r).get(c);
+        Queue<List<Integer>> q = new ArrayDeque<>();
+        HashSet<List<Integer>> visited = new HashSet<>();
+        ArrayList<Integer> root = new ArrayList<>();
+        root.add(r);
+        root.add(c);
+        q.add(root);
+        visited.add(root);
+
+        while (!q.isEmpty()) {
+            List<Integer> current = q.poll();
+            image.get(current.get(0)).set(current.get(1), replacement);
+            List<List<Integer>> neighbors = getNeighbors(current.get(0), current.get(1), image, color);
+
+            for (List<Integer> neighbor : neighbors) {
+                if (!visited.contains(neighbor)) {
+                    q.add(neighbor);
+                    visited.add(neighbor);
+                }
+            }
+        }
+
+        return image;
+    }
+
+    public static void floodFillDfs(int r, int c, int replacement, List<List<Integer>> image, HashSet<List<Integer>> visited) {
+        int color = image.get(r).get(c);
+        ArrayList<Integer> pixel = new ArrayList<>();
+        pixel.add(r);
+        pixel.add(c);
+        image.get(r).set(c, replacement);
+        visited.add(pixel);
+
+        List<List<Integer>> neighbors = getNeighbors(r, c, image, color);
+
+        for (List<Integer> neighbor : neighbors) {
+            if (!visited.contains(neighbor)) {
+                floodFillDfs(neighbor.get(0), neighbor.get(1), replacement, image, visited);
+            }
+        }
+    }
+
+    public static List<List<Integer>> getNeighbors(int row, int col, List<List<Integer>> image, int color) {
+        ArrayList<List<Integer>> neighbors = new ArrayList<>();
+        int maxRow = image.size() - 1;
+        int maxCol = image.get(0).size() - 1;
+        int[] rowDeltas = {-1, 0, 1, 0};
+        int[] colDeltas = {0, 1, 0, -1};
+
+        for (int i = 0; i < 4; i++) {
+            ArrayList<Integer> neighbor = new ArrayList<>();
+            int newRow = row + rowDeltas[i];
+            int newCol = col + colDeltas[i];
+            if (newRow >= 0 && newRow <= maxRow && newCol >= 0 && newCol <= maxCol && image.get(newRow).get(newCol) == color) {
+                neighbor.add(newRow);
+                neighbor.add(newCol);
+                neighbors.add(neighbor);
+            }
+        }
+
+        //System.out.println(neighbors);
+        return neighbors;
+    }
+
 }
