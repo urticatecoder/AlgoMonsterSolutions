@@ -131,4 +131,66 @@ public class Graphs {
         return neighbors;
     }
 
+    // Get the number of connected islands of value 1 from grid
+    public static int countNumberOfIslands(List<List<Integer>> grid) {
+        HashSet<List<Integer>> visited = new HashSet<>();
+        int islandCount = 0;
+
+        for (int i = 0; i < grid.size(); i++) {
+            for (int j = 0; j < grid.get(0).size(); j++) {
+                ArrayList<Integer> pair = new ArrayList<>();
+                pair.add(i);
+                pair.add(j);
+
+                if (grid.get(i).get(j) == 1 && !visited.contains(pair)) {
+                    islandCount++;
+                    islandCountBfs(pair, grid, visited);
+                }
+            }
+        }
+
+        return islandCount;
+    }
+
+    public static void islandCountBfs(ArrayList<Integer> pair, List<List<Integer>> grid, HashSet<List<Integer>> visited) {
+        Queue<List<Integer>> q = new ArrayDeque<>();
+        q.add(pair);
+        visited.add(pair);
+
+        while (!q.isEmpty()) {
+            List<Integer> next = q.poll();
+            List<List<Integer>> neighbors = getNeighbors(next.get(0), next.get(1), grid);
+
+            for (List<Integer> neighbor : neighbors) {
+                if (!visited.contains(neighbor)) {
+                    q.add(neighbor);
+                    visited.add(neighbor);
+                }
+            }
+        }
+    }
+
+    public static List<List<Integer>> getNeighbors (int row, int col, List<List<Integer>> grid) {
+        int[] deltaRow = {-1, 0, 1, 0};
+        int[] deltaCol = {0, 1, 0, -1};
+        int maxRow = grid.size() - 1;
+        int maxCol = grid.get(0).size() - 1;
+        ArrayList<List<Integer>> neighbors = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            int newRow = row + deltaRow[i];
+            int newCol = col + deltaCol[i];
+
+            if (newRow >= 0 && newRow <= maxRow && newCol >= 0 && newCol <= maxCol && grid.get(newRow).get(newCol) == 1) {
+                ArrayList<Integer> neighbor = new ArrayList<>();
+                neighbor.add(newRow);
+                neighbor.add(newCol);
+                neighbors.add(neighbor);
+            }
+        }
+
+        //System.out.println(neighbors);
+        return neighbors;
+    }
+
 }
