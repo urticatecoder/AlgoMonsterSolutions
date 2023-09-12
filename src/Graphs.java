@@ -132,6 +132,8 @@ public class Graphs {
     }
 
     // Get the number of connected islands of value 1 from grid
+    // Note that you could also keep track of visited nodes here by setting their values to 0 or something else in the
+    // grid
     public static int countNumberOfIslands(List<List<Integer>> grid) {
         HashSet<List<Integer>> visited = new HashSet<>();
         int islandCount = 0;
@@ -190,6 +192,60 @@ public class Graphs {
         }
 
         //System.out.println(neighbors);
+        return neighbors;
+    }
+
+    // Return the minimum number of moves it would take a knight (in chess) to get to the coordinates (x, y) starting
+    // at (0, 0) on an infinite chess board.
+    public static int getKnightShortestPath(int x, int y) {
+        // Represent coordinates as an array list with two integers
+        Queue<List<Integer>> q = new ArrayDeque<>();
+        HashSet<List<Integer>> visited = new HashSet<>();
+        ArrayList<Integer> root = new ArrayList<>();
+        root.add(0);
+        root.add(0);
+        q.add(root);
+        visited.add(root);
+
+        int level = 0;
+
+        while (!q.isEmpty()) {
+            int n = q.size();
+
+            for (int i = 0; i < n; i++) {
+                List<Integer> coordinate = q.poll();
+                List<List<Integer>> neighbors = getNeighbors(coordinate);
+
+                for (List<Integer> neighbor : neighbors) {
+                    if (neighbor.get(0) == x && neighbor.get(1) == y) {
+                        return level + 1;
+                    }
+
+                    if (!visited.contains(neighbor)) {
+                        q.add(neighbor);
+                        visited.add(neighbor);
+                    }
+                }
+            }
+
+            level++;
+        }
+
+        return level;
+    }
+
+    public static List<List<Integer>> getNeighbors(List<Integer> coordinate) {
+        int[] deltaRow = {2, 1, -1, -2, -2, -1, 1, 2};
+        int[] deltaCol = {1, 2, 2, 1, -1, -2, -2, -1};
+        ArrayList<List<Integer>> neighbors = new ArrayList<>();
+
+        for (int i = 0; i < 8; i++) {
+            ArrayList<Integer> neighbor = new ArrayList<>();
+            neighbor.add(coordinate.get(0) + deltaRow[i]);
+            neighbor.add(coordinate.get(1) + deltaCol[i]);
+            neighbors.add(neighbor);
+        }
+
         return neighbors;
     }
 
