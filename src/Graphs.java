@@ -249,4 +249,65 @@ public class Graphs {
         return neighbors;
     }
 
+    public static List<List<Integer>> mapGateDistances(List<List<Integer>> dungeonMap) {
+        Queue<List<Integer>> q = new ArrayDeque<>();
+        HashSet<List<Integer>> visited = new HashSet<>();
+        int level = 0;
+
+        for (int i = 0; i < dungeonMap.size(); i++) {
+            for (int j = 0; j < dungeonMap.get(0).size(); j++) {
+                if (dungeonMap.get(i).get(j) == 0) {
+                    ArrayList<Integer> coordinates = new ArrayList<>();
+                    coordinates.add(i);
+                    coordinates.add(j);
+                    q.add(coordinates);
+                    visited.add(coordinates);
+                }
+            }
+        }
+
+        while (!q.isEmpty()) {
+            int levelSize = q.size();
+
+            for (int i = 0; i < levelSize; i++) {
+                List<Integer> current = q.poll();
+                List<List<Integer>> neighbors = getNeighbors(current, dungeonMap);
+
+                for (List<Integer> neighbor : neighbors) {
+                    if (!visited.contains(neighbor)) {
+                        // Set the value at the coordinates of neighbor
+                        dungeonMap.get(neighbor.get(0)).set(neighbor.get(1), level + 1);
+                        q.add(neighbor);
+                        visited.add(neighbor);
+                    }
+                }
+            }
+
+            level++;
+        }
+
+        return dungeonMap;
+    }
+
+    public static List<List<Integer>> getNeighbors(List<Integer> cell, List<List<Integer>> dungeonMap) {
+        int[] rowDelta = {-1, 0, 1, 0};
+        int[] colDelta = {0, 1, 0, -1};
+        int maxRow = dungeonMap.size() - 1;
+        int maxCol = dungeonMap.get(0).size() - 1;
+        ArrayList<List<Integer>> neighbors = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            int newRow = cell.get(0) + rowDelta[i];
+            int newCol = cell.get(1) + colDelta[i];
+
+            if (newRow >= 0 && newRow <= maxRow && newCol >= 0 && newCol <= maxCol && dungeonMap.get(newRow).get(newCol) == 2147483647) {
+                ArrayList<Integer> coordinates = new ArrayList<>();
+                coordinates.add(newRow);
+                coordinates.add(newCol);
+                neighbors.add(coordinates);
+            }
+        }
+
+        return neighbors;
+    }
 }
