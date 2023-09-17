@@ -9,17 +9,19 @@ import java.util.HashSet;
 
 public class Graphs {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int graphLength = Integer.parseInt(scanner.nextLine());
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i < graphLength; i++) {
-            graph.add(splitWords(scanner.nextLine()).stream().map(Integer::parseInt).collect(Collectors.toList()));
-        }
-        int a = Integer.parseInt(scanner.nextLine());
-        int b = Integer.parseInt(scanner.nextLine());
-        scanner.close();
-        int res = shortestPath(graph, a, b);
-        System.out.println(res);
+//        Scanner scanner = new Scanner(System.in);
+//        int graphLength = Integer.parseInt(scanner.nextLine());
+//        List<List<Integer>> graph = new ArrayList<>();
+//        for (int i = 0; i < graphLength; i++) {
+//            graph.add(splitWords(scanner.nextLine()).stream().map(Integer::parseInt).collect(Collectors.toList()));
+//        }
+//        int a = Integer.parseInt(scanner.nextLine());
+//        int b = Integer.parseInt(scanner.nextLine());
+//        scanner.close();
+//        int res = shortestPath(graph, a, b);
+//        System.out.println(res);
+
+        System.out.println(getNeighbors("1459"));
     }
 
     public static List<String> splitWords(String s) {
@@ -309,5 +311,97 @@ public class Graphs {
         }
 
         return neighbors;
+    }
+
+    public static List<String> getNeighbors(String combo) {
+        int combination = Integer.parseInt(combo);
+        int[] placeValues = {1, 10, 100, 1000};
+        ArrayList<String> ret = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            int intermediary = combination / placeValues[i];
+
+            if (intermediary % 10 == 9) {
+                ret.add(Integer.toString(combination - 9 * placeValues[i]));
+                ret.add(Integer.toString(combination - placeValues[i]));
+            } else if (intermediary % 10 == 0) {
+                ret.add(Integer.toString(combination + placeValues[i]));
+                ret.add(Integer.toString(combination + 9 * placeValues[i]));
+            } else {
+                ret.add(Integer.toString(combination + placeValues[i]));
+                ret.add(Integer.toString(combination - placeValues[i]));
+            }
+
+        }
+
+        return ret;
+    }
+
+    // Return the minimum number of steps that it takes to get from "0000" to targetCombo
+    public static int numSteps(String targetCombo, List<String> trappedCombos) {
+        Queue<String> q = new ArrayDeque<>();
+        HashSet<String> visited = new HashSet<>();
+        HashSet<String> trapped = new HashSet<>(trappedCombos);
+        int level = 0;
+        q.add("0000");
+        visited.add("0000");
+
+        while(!q.isEmpty()) {
+            int levelSize = q.size();
+
+            for (int i = 0; i < levelSize; i++) {
+                String currentCombo = q.poll();
+
+                for (String neighbor : getNeighborsCombo(currentCombo)) {
+                    if (!visited.contains(neighbor) && !trapped.contains(neighbor)) {
+                        if (neighbor.equals(targetCombo)) {
+                            return level + 1;
+                        }
+
+                        q.add(neighbor);
+                        visited.add(neighbor);
+                    }
+                }
+            }
+
+            level++;
+        }
+
+        return -1;
+    }
+
+    public static List<String> getNeighborsCombo(String combo) {
+        int combination = Integer.parseInt(combo);
+        int[] placeValues = {1, 10, 100, 1000};
+        ArrayList<String> ret = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            int intermediary = combination / placeValues[i];
+            String str1 = "";
+            String str2 = "";
+            if (intermediary % 10 == 9) {
+                str1 = Integer.toString(combination - 9 * placeValues[i]);
+                str2 = Integer.toString(combination - placeValues[i]);
+            } else if (intermediary % 10 == 0) {
+                str1 = Integer.toString(combination + placeValues[i]);
+                str2 = Integer.toString(combination + 9 * placeValues[i]);
+            } else {
+                str1 = Integer.toString(combination + placeValues[i]);
+                str2 = Integer.toString(combination - placeValues[i]);
+            }
+
+            while (str1.length() < 4) {
+                str1 = "0" + str1;
+            }
+
+            while (str2.length() < 4) {
+                str2 = "0" + str2;
+            }
+
+            ret.add(str1);
+            ret.add(str2);
+        }
+
+        return ret;
     }
 }
