@@ -21,7 +21,7 @@ public class Graphs {
 //        int res = shortestPath(graph, a, b);
 //        System.out.println(res);
 
-        System.out.println(getNeighbors("1459"));
+        System.out.println(getNeighborsCombo("1459"));
     }
 
     public static List<String> splitWords(String s) {
@@ -313,30 +313,6 @@ public class Graphs {
         return neighbors;
     }
 
-    public static List<String> getNeighbors(String combo) {
-        int combination = Integer.parseInt(combo);
-        int[] placeValues = {1, 10, 100, 1000};
-        ArrayList<String> ret = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            int intermediary = combination / placeValues[i];
-
-            if (intermediary % 10 == 9) {
-                ret.add(Integer.toString(combination - 9 * placeValues[i]));
-                ret.add(Integer.toString(combination - placeValues[i]));
-            } else if (intermediary % 10 == 0) {
-                ret.add(Integer.toString(combination + placeValues[i]));
-                ret.add(Integer.toString(combination + 9 * placeValues[i]));
-            } else {
-                ret.add(Integer.toString(combination + placeValues[i]));
-                ret.add(Integer.toString(combination - placeValues[i]));
-            }
-
-        }
-
-        return ret;
-    }
-
     // Return the minimum number of steps that it takes to get from "0000" to targetCombo
     public static int numSteps(String targetCombo, List<String> trappedCombos) {
         Queue<String> q = new ArrayDeque<>();
@@ -403,5 +379,64 @@ public class Graphs {
         }
 
         return ret;
+    }
+
+    public static int wordLadder(String begin, String end, List<String> wordList) {
+        Queue<String> q = new ArrayDeque<>();
+        HashSet<String> visited = new HashSet<>();
+        q.add(begin);
+        visited.add(begin);
+        int wordCount = 0;
+
+        while (!q.isEmpty()) {
+            int levelSize = q.size();
+
+
+            for (int i = 0; i < levelSize; i++) {
+                String currentWord = q.poll();
+                List<String> neighbors = getNeighborsWordLadder(wordList, currentWord);
+
+                for (String neighbor : neighbors) {
+                    if (neighbor.equals(end)) return wordCount + 1;
+                    if (visited.contains(neighbor)) continue;
+
+                    q.add(neighbor);
+                    visited.add(neighbor);
+                }
+            }
+
+            wordCount++;
+        }
+
+        return wordCount;
+    }
+
+
+    // Return a list of all words in wordList that differ from word by 1 character
+    // Runs in O(nm) time, for n the number of words in wordList, and m the length of the maximum word
+    // AlgoMonster's solution maintains a list of unvisited words, and goes through every
+    // character in word, changing it to all 26 character and checking to see if the new
+    // word is in the set of unvisited ones. It claims this reduces time complexity (of the whole
+    // solution) to O(n + m), which I don't believe.
+    public static List<String> getNeighborsWordLadder(List<String> wordList, String word) {
+        ArrayList<String> neighbors = new ArrayList<>();
+
+        for (String next : wordList) {
+            int differCount = 0;
+            if (next.equals(word)) continue;
+            if (Math.abs(next.length() - word.length()) > 2) continue;
+
+            for (int i = 0; i < word.length(); i++) {
+                if (i > next.length() - 1) {
+                    differCount++;
+                } else if (word.charAt(i) != next.charAt(i)) {
+                    differCount++;
+                }
+            }
+
+            if (differCount <= 1) neighbors.add(next);
+        }
+
+        return neighbors;
     }
 }
