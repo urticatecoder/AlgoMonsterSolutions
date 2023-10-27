@@ -15,7 +15,8 @@ public class TwoPointers {
         }
     }
 
-    // Modify (the sorted) arr in place so that the first elements are all the unique elements of arr. Return the n
+    // Modify (the sorted) arr in place so that the first elements are all the unique elements of arr. Return the
+    // number of non duplicate elements
     public static int removeDuplicates(List<Integer> arr) {
         int fast = 0;
         int slow = 0;
