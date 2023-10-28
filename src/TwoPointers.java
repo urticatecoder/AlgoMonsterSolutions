@@ -70,4 +70,49 @@ public class TwoPointers {
             fast++;
         }
     }
+
+    // Return a list that contains the indices of the two elements that sum to target in O(n) time without
+    // using any auxiliary space.
+    public static List<Integer> twoSumSorted(List<Integer> arr, int target) {
+        int left = 0;
+        int right = arr.size() - 1;
+        ArrayList<Integer> ret = new ArrayList<>();
+
+        while (left < right) {
+            if (arr.get(right) > target - arr.get(left)) {
+                right--;
+            } else if (arr.get(right) < target - arr.get(left)) {
+                left++;
+            } else if (arr.get(right) == target - arr.get(left)) {
+                ret.add(left);
+                ret.add(right);
+                return ret;
+            }
+        }
+
+        return ret;
+    }
+
+    // Return whether or not the string s is a palindrome.
+    public static boolean isPalindrome(String s) {
+        int left = 0, right = s.length() - 1;
+
+        while (left < right) {
+            while (left < right && !Character.isLetterOrDigit(s.charAt(left))) {
+                left++;
+            }
+
+            while (left < right && !Character.isLetterOrDigit(s.charAt(right))) {
+                right--;
+            }
+
+            if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+
+        return true;
+    }
 }
