@@ -115,4 +115,27 @@ public class TwoPointers {
 
         return true;
     }
+
+    // Return the maximum sum of all contiguous subarrays of length k
+    public static int subarraySumFixed(List<Integer> nums, int k) {
+        int left = 0;
+        int right = left + k - 1;
+        int curSum = 0;
+        int maxSum = 0;
+        for (int i = 0; i <= right; i++) {
+            curSum += nums.get(i);
+        }
+
+        while (right < nums.size() - 1) {
+            curSum -= nums.get(left);
+            left++;
+            right++;
+            curSum += nums.get(right);
+            if (curSum > maxSum) {
+                maxSum = curSum;
+            }
+        }
+
+        return maxSum;
+    }
 }
