@@ -138,4 +138,76 @@ public class TwoPointers {
 
         return maxSum;
     }
+
+    // Return a list of all the indices in original for which the next check.length() character form an anagram
+    // of check.
+    public static List<Integer> findAllAnagrams(String original, String check) {
+        if (original.length() < check.length()) {
+            return List.of();
+        }
+
+        HashMap<Character, Integer> checkCharacterCounts = new HashMap<>();
+        for (int i = 0; i < check.length(); i++) {
+            checkCharacterCounts.putIfAbsent(check.charAt(i), 0);
+            checkCharacterCounts.put(check.charAt(i), checkCharacterCounts.get(check.charAt(i)) + 1);
+        }
+
+        HashMap<Character, Integer> originalCharacterCounts = new HashMap<>();
+        for (int i = 0; i < check.length(); i++) {
+            originalCharacterCounts.putIfAbsent(original.charAt(i), 0);
+            originalCharacterCounts.put(original.charAt(i), originalCharacterCounts.get(original.charAt(i)) + 1);
+        }
+
+        ArrayList<Integer> indices = new ArrayList<>();
+        int left = 0;
+        int right = check.length() - 1;
+
+        while (right < original.length()) {
+            if (checkCharacterCounts.equals(originalCharacterCounts)) indices.add(left);
+            if (right == original.length() - 1) break;
+
+            if (originalCharacterCounts.get(original.charAt(left)) == 1) {
+                originalCharacterCounts.remove(original.charAt(left));
+            } else {
+                originalCharacterCounts.put(original.charAt(left), originalCharacterCounts.get(original.charAt(left)) - 1);
+            }
+            left++;
+            right++;
+            originalCharacterCounts.putIfAbsent(original.charAt(right), 0);
+            originalCharacterCounts.put(original.charAt(right), originalCharacterCounts.get(original.charAt(right)) + 1);
+        }
+
+        return indices;
+    }
+
+    // Return the length of the longest contiguous subarray of nums whose sum is less than target.
+    public static int subarraySumLongest(List<Integer> nums, int target) {
+        int longest = 0;
+        int left = 0, right = 0;
+        int curSum = nums.get(left);
+
+        while (right < nums.size()) {
+            if (curSum > target) {
+                if (left == right) {
+                    left++;
+                    right++;
+                    curSum = nums.get(left);
+                } else {
+                    curSum -= nums.get(left);
+                    left++;
+                }
+            } else {
+                if (right - left > longest) {
+                    longest = right - left + 1;
+                }
+                right++;
+
+                if (right != nums.size()) {
+                    curSum += nums.get(right);
+                }
+            }
+        }
+
+        return longest;
+    }
 }
