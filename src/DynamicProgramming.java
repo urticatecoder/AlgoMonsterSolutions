@@ -89,4 +89,67 @@ public class DynamicProgramming {
 
         return dp[m - 1][n - 1];
     }
+
+    // TRIANGLE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Return the minimum sum of any path from the top of a triangle to the bottom of the triangle.
+    // This solution uses DFS+memoization. Each recursive call considers the minimum path from the
+    // top to this element.
+    public static int minimumTotal1(List<List<Integer>> triangle) {
+        int min = Integer.MAX_VALUE;
+        int[][] memo = new int[triangle.size()][triangle.get(triangle.size() -1).size()];
+        for (int i = 0; i < memo.length; i++) {
+            for (int j = 0; j < memo[i].length; j++) {
+                memo[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+        for (int i = 0; i < triangle.get(triangle.size() - 1).size(); i++) {
+            int minPath = minimumTotal1Helper(triangle, triangle.size() - 1, i, memo);
+            if (minPath < min) min = minPath;
+        }
+
+        return min;
+    }
+
+    public static int minimumTotal1Helper(List<List<Integer>> triangle, int row, int col, int[][] memo) {
+        if (col < 0 || col > triangle.get(row).size() - 1) return Integer.MAX_VALUE;
+        if (row == 0) return triangle.get(0).get(0);
+        if (memo[row][col] != Integer.MAX_VALUE) return memo[row][col];
+
+        int left = minimumTotal1Helper(triangle, row - 1, col - 1, memo);
+        int right = minimumTotal1Helper(triangle, row - 1, col, memo);
+        memo[row][col] = Math.min(left,right) + triangle.get(row).get(col);
+
+        return memo[row][col];
+    }
+
+    // Bottom up approach where dp[i][j] is the minimum sum path from the top to i,j.
+    // These solutions could be made a little better by making the subproblem for i,j
+    // correspond to the maximum sum from i,j to the bottom of the pyramid. Then you wouldn't
+    // have to compute the minimum over all elements in the last row.
+    public static int minimumTotal2(List<List<Integer>> triangle) {
+        int[][] dp = new int[triangle.size()][triangle.get(triangle.size() - 1).size()];
+
+        for (int i = 0; i < triangle.size(); i++) {
+            for (int j = 0; j < triangle.get(i).size(); j++) {
+                if (i == 0) {
+                    dp[i][j] = triangle.get(i).get(j);
+                } else if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + triangle.get(i).get(j);
+                } else if (j == triangle.get(i).size() - 1) {
+                    dp[i][j] = dp[i - 1][j - 1] + triangle.get(i).get(j);
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j - 1], dp[i - 1][j]) + triangle.get(i).get(j);
+                }
+            }
+        }
+
+        int min = dp[dp.length - 1][0];
+
+        for (int i = 0; i < triangle.get(triangle.size() - 1).size(); i++) {
+            if (dp[dp.length - 1][i] < min ) min = dp[dp.length - 1][i];
+        }
+
+        return min;
+    }
 }
