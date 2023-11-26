@@ -152,4 +152,34 @@ public class DynamicProgramming {
 
         return min;
     }
+
+    // Return the length of the longest increasing subsequence
+    public static int longestSubLen(List<Integer> nums) {
+        if (nums.size() == 0) return 0;
+        int[] memo = new int[nums.size()];
+
+        int max = 1;
+        for (int i = 0; i < nums.size(); i++) {
+            int lis = longestSubLenHelper(nums, i, memo);
+            max = Math.max(max, lis);
+        }
+
+        return max;
+    }
+
+    public static int longestSubLenHelper(List<Integer> nums, int i, int[] memo) {
+        if (i == 0) return 1;
+        if (memo[i] != 0) return memo[i];
+
+        int max = 1;
+        for (int j = 0; j < i; j++) {
+            if (nums.get(j) < nums.get(i)) {
+                int cur = longestSubLenHelper(nums, j, memo) + 1;
+                if (cur > max) max = cur;
+            }
+        }
+
+        memo[i] = max;
+        return max;
+    }
 }
