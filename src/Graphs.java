@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.Queue;
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.HashMap;
 
 public class Graphs {
     public static void main(String[] args) {
@@ -21,7 +22,22 @@ public class Graphs {
 //        int res = shortestPath(graph, a, b);
 //        System.out.println(res);
 
-        System.out.println(getNeighborsCombo("1459"));
+        ArrayList<Integer> row1 = new ArrayList<>();
+        ArrayList<Integer> row2 = new ArrayList<>();
+
+        row1.add(1);
+        row1.add(0);
+        row1.add(2);
+        row2.add(4);
+        row2.add(5);
+        row2.add(3);
+        ArrayList<List<Integer>> cell = new ArrayList<>();
+        cell.add(row1);
+        cell.add(row2);
+
+        System.out.println(cell);
+
+        System.out.println(slidingPuzzleGetNeighbors(cell));
     }
 
     public static List<String> splitWords(String s) {
@@ -438,5 +454,147 @@ public class Graphs {
         }
 
         return neighbors;
+    }
+
+
+    // Given a sliding puzzle consisting of six squares (five of them have tiles, represented by nonzero numbers
+    // and one of them is an empty space, represented by a zero), return the minimum number of moves it will take
+    // to return the puzzle to is original state (i.e. 1 2 3
+    //                                                 4 5 0).
+    public static int numSteps(List<List<Integer>> initPos) {
+        Queue<List<List<Integer>>> q = new ArrayDeque<>();
+        HashSet<List<List<Integer>>> visited = new HashSet<>();
+        visited.add(initPos);
+        q.add(initPos);
+        int steps = 0;
+
+        ArrayList<List<Integer>> finalState = new ArrayList<>();
+        ArrayList<Integer> row1 = new ArrayList<>();
+        ArrayList<Integer> row2 = new ArrayList<>();
+        row1.add(1);
+        row1.add(2);
+        row1.add(3);
+        row2.add(4);
+        row2.add(5);
+        row2.add(0);
+        finalState.add(row1);
+        finalState.add(row2);
+
+
+        while (!q.isEmpty()) {
+            int n = q.size();
+
+            for (int i = 0; i < n; i++) {
+                List<List<Integer>> currentState = q.poll();
+                if (currentState.equals(finalState)) return steps;
+
+                for (List<List<Integer>> neighbor : slidingPuzzleGetNeighbors(currentState)) {
+                    if (!visited.contains(neighbor)) {
+                        q.add(neighbor);
+                        visited.add(neighbor);
+                    }
+                }
+            }
+
+            steps++;
+        }
+
+
+        return -1;
+    }
+
+    public static List<List<List<Integer>>> slidingPuzzleGetNeighbors(List<List<Integer>> initPos) {
+        List<List<List<Integer>>> neighbors = new ArrayList<>();
+        int zeroRow = 0;
+        int zeroCol = 0;
+
+        for (int i = 0; i < initPos.size(); i++) {
+            for (int j = 0; j < initPos.get(0).size(); j++) {
+                if (initPos.get(i).get(j) == 0) {
+                    zeroRow = i;
+                    zeroCol = j;
+                }
+            }
+        }
+
+        int[] rowOffsets = {0, 1, 0, -1};
+        int[] colOffsets = {1, 0, -1, 0};
+
+        for (int i = 0; i < 4; i++) {
+            int switchRow = zeroRow + rowOffsets[i];
+            int switchCol = zeroCol + colOffsets[i];
+
+            if (switchRow >= 0 && switchRow < 2 && switchCol >= 0 && switchCol < 3) {
+                int switchValue = initPos.get(switchRow).get(switchCol);
+                ArrayList<List<Integer>> neighbor = new ArrayList<>();
+                ArrayList<Integer> firstRow = new ArrayList<>();
+                ArrayList<Integer> secondRow = new ArrayList<>();
+
+                for (int j = 0; j < initPos.size(); j++) {
+                    for (int k = 0; k < initPos.get(0).size(); k++) {
+                        if (j == 0 && j == zeroRow && k == zeroCol) {
+                            firstRow.add(switchValue);
+                        } else if (j == 0 && j == switchRow && k == switchCol) {
+                            firstRow.add(0);
+                        } else if (j == 0) {
+                            firstRow.add(initPos.get(j).get(k));
+                        } else if (j == 1 && j == zeroRow && k == zeroCol) {
+                            secondRow.add(switchValue);
+                        } else if (j == 1 && j == switchRow && k == switchCol) {
+                            secondRow.add(0);
+                        } else {
+                            secondRow.add(initPos.get(j).get(k));
+                        }
+                    }
+                }
+
+                neighbor.add(firstRow);
+                neighbor.add(secondRow);
+                neighbors.add(neighbor);
+            }
+        }
+
+        return neighbors;
+    }
+
+    public static List<String> taskScheduling(List<String> tasks, List<List<String>> requirements) {
+        // Create graph, get in degree counts
+        HashMap<String, List<String>> graph = new HashMap<>();
+        HashMap<String, Integer> inCounts = new HashMap<>();
+
+        for (String task : tasks) {
+            ArrayList<String> neighbors = new ArrayList<>();
+            graph.put(task, neighbors);
+            inCounts.put(task, 0);
+        }
+
+        for (List<String> dependency : requirements) {
+            graph.get(dependency.get(0)).add(dependency.get(1));
+            inCounts.put(dependency.get(1), inCounts.get(dependency.get(1)) + 1);
+        }
+
+        // Run Kahn's algorithm
+        Queue<String> q = new ArrayDeque<>();
+
+        for (String task : inCounts.keySet()) {
+            if (inCounts.get(task) == 0) {
+                q.add(task);
+            }
+        }
+
+        ArrayList<String> order = new ArrayList<>();
+
+        while (!q.isEmpty()) {
+            String cur = q.poll();
+            order.add(cur);
+            for (String neighbor : graph.get(cur)) {
+                inCounts.put(neighbor, inCounts.get(neighbor) - 1);
+                if (inCounts.get(neighbor) == 0) {
+                    q.add(neighbor);
+                }
+            }
+        }
+
+        return order;
     }
 }
