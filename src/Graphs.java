@@ -597,4 +597,56 @@ public class Graphs {
 
         return order;
     }
+
+    public static boolean sequenceReconstruction(List<Integer> original, List<List<Integer>> seqs) {
+        // Construct graph
+        HashMap<Integer, Set<Integer>> graph = new HashMap<>();
+        HashMap<Integer, Integer> inDegrees = new HashMap<>();
+
+        for (Integer integer : original) {
+            HashSet<Integer> neighbors = new HashSet<>();
+            graph.put(integer, neighbors);
+            inDegrees.put(integer, 0);
+        }
+
+        for (List<Integer> subsequence : seqs) {
+
+            if (subsequence.size() <= 1) continue;
+
+            int left = 0;
+            int right = 1;
+
+            while (right < subsequence.size()) {
+                if (!graph.get(subsequence.get(left)).contains(subsequence.get(right))) {
+                    inDegrees.put(subsequence.get(right), inDegrees.get(subsequence.get(right)) + 1);
+                }
+                graph.get(subsequence.get(left)).add(subsequence.get(right));
+
+                right++;
+                left++;
+            }
+        }
+
+        // Run Topological sort
+        Queue<Integer> q = new ArrayDeque<>();
+        for (Integer integer : inDegrees.keySet()) {
+            if (inDegrees.get(integer) == 0) {
+                q.add(integer);
+            }
+        }
+
+        while (!q.isEmpty()) {
+            if (q.size() > 1) return false;
+            int current = q.poll();
+
+            for (int neighbor : graph.get(current)) {
+                inDegrees.put(neighbor, inDegrees.get(neighbor) - 1);
+                if (inDegrees.get(neighbor) == 0) {
+                    q.add(neighbor);
+                }
+            }
+        }
+
+        return true;
+    }
 }
